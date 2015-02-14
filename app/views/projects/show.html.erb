@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @project.name %>
+</p>
+<p>
+<%= link_to 'Edit', edit_user_project_path(@user, @project) %> |
+<%= link_to 'Back', user_path(@user) %>
+</p>
+<p>People involved in this project:</p>
+<% @project.users.each do |user| %>
+	<%= link_to user.name, user_path(user) %>
+	<%= link_to 'Delete from this project', "#" %>
+	<br>
+<% end %>
+<br>
