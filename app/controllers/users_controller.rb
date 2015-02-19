@@ -25,14 +25,14 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(:name => user_params[:name], :email => user_params[:email])
-     unless params[:user][:project][:name].blank?
-          @project = Project.new(user_params[:project])
-        end
     respond_to do |format|
       if @user.save
-        @project.save
-        @projects_user = ProjectsUser.new(:project_id => @project.id, :user_id => @user.id)
-        @projects_user.save
+        unless params[:user][:project][:name].blank?
+          @project = Project.find_or_initialize_by(user_params[:project])
+          @project.save
+          @projects_user = ProjectsUser.new(:project_id => @project.id, :user_id => @user.id)
+          @projects_user.save
+        end
         format.html { redirect_to @user, notice: "User was successfully created." }
         format.json { render :show, status: :created, location: @user }
       else
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params)
+      if @user.update(:name => user_params[:name], :email => user_params[:email])
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -61,7 +61,7 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     respond_to do |format|
-      format.html { redirect_to user_path(@user), notice: 'User was successfully destroyed.' }
+      format.html { redirect_to users_path, notice: 'User was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

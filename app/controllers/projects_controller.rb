@@ -26,9 +26,6 @@ class ProjectsController < ApplicationController
   # POST /projects.json
   def create
     @project = Project.find_or_initialize_by(project_params)
-    
-    # si el proyecto ya existe debe redireccionar al perfil del usuario, pero y si el proyecto
-    # esta creado por otro usuario?
     if @project.new_record?
       respond_to do |format|
         if  @project.save
@@ -95,7 +92,6 @@ class ProjectsController < ApplicationController
     end
 
     def project_already_assigned?(user,project)
-      
       projects = user.projects
       pa = projects.find{|p| p.id == project.id}
       not pa.nil?
